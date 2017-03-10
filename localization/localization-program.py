@@ -72,9 +72,13 @@ def localize(colors,measurements,motions,sensor_right,p_move):
         q = [[q[i][j] / total_probability for j in range(len(q[0]))] for i in range(len(q))]
         
         return q
-        
+
+    if len(measurements)!= len(motions):
+        raise ValueError, "Error in the size of measurements/motions vectors. Both should be of the same size"
+
     for i in range(len(measurements)):
         p = sense(move(p,motions[i]),measurements[i])
+
     return p
 
 def show(p):
