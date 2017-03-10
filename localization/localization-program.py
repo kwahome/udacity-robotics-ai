@@ -59,17 +59,19 @@ def localize(colors,measurements,motions,sensor_right,p_move):
         return q 
         
     def sense(p,Z):
+        q = []
         total_probability = 0
         for i in range(len(p)):
+            q_row = []
             for j in range(len(p[i])):
                 hit = (Z == colors[i][j])
-                p[i][j] = p[i][j] * (hit * sensor_right + (1-hit) * (1-sensor_right))
-                
-        total_probability = sum(sum(row) for row in p)
+                q_row.append(p[i][j] * (hit * sensor_right + (1-hit) * (1-sensor_right)))
+            q.append(q_row)    
+        total_probability = sum(sum(row) for row in q)
         
-        p = [[p[i][j] / total_probability for j in range(len(p[0]))] for i in range(len(p))]
+        q = [[q[i][j] / total_probability for j in range(len(q[0]))] for i in range(len(q))]
         
-        return p
+        return q
         
     for i in range(len(measurements)):
         p = sense(move(p,motions[i]),measurements[i])
