@@ -43,38 +43,36 @@
 #  [1,0] - down
 #  [-1,0] - up
 
-def sense(p,colors,Z,pHit):
-    total_probability = 0
-    for i in range(len(p)):
-        for j in range(len(p[i])):
-            hit = (Z == colors[i][j])
-            p[i][j] = p[i][j] * (hit * pHit + (1-hit) * (1-pHit))
-    total_probability = sum(sum(row) for row in p)
-    
-    for i in range(len(p)):
-        for j in range(len(p[i])):
-            p[i][j] = p[i][j]/total_probability
-    return p
-
-def move(p,U,mHit):
-    for i in range(len(p)):
-        for j in range(len(p[i])):
-            row = (i - U[0]) % (len(p))
-            col = (j - U[1]) % (len(p[i]))
-            p[i][j] = p[row][col] * mHit + (1 - mHit) * p[i][j]
-    return p
-    
-    
 def localize(colors,measurements,motions,sensor_right,p_move):
     # initializes p to a uniform distribution over a grid of the same dimensions as colors
     pinit = 1.0 / float(len(colors)) / float(len(colors[0]))
     p = [[pinit for row in range(len(colors[0]))] for col in range(len(colors))]
     
     # >>> Insert your code here <<<
+    def move(p,U):
+        q = []
+        for i in range(len(p)):
+            q_row = []
+            for j in range(len(p[i])):
+                q_row.append(p[(i - U[0]) % (len(p))][(j - U[1]) % (len(p[i]))] * p_move + (1 - p_move) * p[i][j])
+            q.append(q_row)
+        return q 
+        
+    def sense(p,Z):
+        total_probability = 0
+        for i in range(len(p)):
+            for j in range(len(p[i])):
+                hit = (Z == colors[i][j])
+                p[i][j] = p[i][j] * (hit * sensor_right + (1-hit) * (1-sensor_right))
+                
+        total_probability = sum(sum(row) for row in p)
+        
+        p = [[p[i][j] / total_probability for j in range(len(p[0]))] for i in range(len(p))]
+        
+        return p
+        
     for i in range(len(measurements)):
-        p = move(p,motions[i],p_move)
-       # p = sense(move(p,motions[i],p_move),colors, measurements[i],sensor_right)
-    
+        p = sense(move(p,motions[i]),measurements[i])
     return p
 
 def show(p):
