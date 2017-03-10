@@ -42,6 +42,32 @@
 #  [0,-1] - left
 #  [1,0] - down
 #  [-1,0] - up
+import time
+start_time = time.time()
+
+def move(p,U,p_move):
+    q = []
+    for i in range(len(p)):
+        q_row = []
+        for j in range(len(p[i])):
+            q_row.append(p[(i - U[0]) % (len(p))][(j - U[1]) % (len(p[i]))] * p_move + (1 - p_move) * p[i][j])
+        q.append(q_row)
+    return q 
+    
+def sense(p,colors,Z,sensor_right):
+    q = []
+    total_probability = 0
+    for i in range(len(p)):
+        q_row = []
+        for j in range(len(p[i])):
+            hit = (Z == colors[i][j])
+            q_row.append(p[i][j] * (hit * sensor_right + (1-hit) * (1-sensor_right)))
+        q.append(q_row)    
+    total_probability = sum(sum(row) for row in q)
+    
+    q = [[q[i][j] / total_probability for j in range(len(q[0]))] for i in range(len(q))]
+    
+    return q
 
 def localize(colors,measurements,motions,sensor_right,p_move):
     # initializes p to a uniform distribution over a grid of the same dimensions as colors
@@ -49,35 +75,12 @@ def localize(colors,measurements,motions,sensor_right,p_move):
     p = [[pinit for row in range(len(colors[0]))] for col in range(len(colors))]
     
     # >>> Insert your code here <<<
-    def move(p,U):
-        q = []
-        for i in range(len(p)):
-            q_row = []
-            for j in range(len(p[i])):
-                q_row.append(p[(i - U[0]) % (len(p))][(j - U[1]) % (len(p[i]))] * p_move + (1 - p_move) * p[i][j])
-            q.append(q_row)
-        return q 
-        
-    def sense(p,Z):
-        q = []
-        total_probability = 0
-        for i in range(len(p)):
-            q_row = []
-            for j in range(len(p[i])):
-                hit = (Z == colors[i][j])
-                q_row.append(p[i][j] * (hit * sensor_right + (1-hit) * (1-sensor_right)))
-            q.append(q_row)    
-        total_probability = sum(sum(row) for row in q)
-        
-        q = [[q[i][j] / total_probability for j in range(len(q[0]))] for i in range(len(q))]
-        
-        return q
 
     if len(measurements)!= len(motions):
         raise ValueError, "Error in the size of measurements/motions vectors. Both should be of the same size"
 
     for i in range(len(measurements)):
-        p = sense(move(p,motions[i]),measurements[i])
+        p = sense(move(p,motions[i],p_move),colors,measurements[i],sensor_right)
 
     return p
 
@@ -92,7 +95,6 @@ def show(p):
 #  [0.00739, 0.00894, 0.11272, 0.35350, 0.04065],
 #  [0.00910, 0.00715, 0.01434, 0.04313, 0.03642]]
 # (within a tolerance of +/- 0.001 for each entry)
-
 colors = [['R','G','G','R','R'],
           ['R','R','G','R','R'],
           ['R','R','G','G','R'],
@@ -101,3 +103,5 @@ measurements = ['G','G','G','G','G']
 motions = [[0,0],[0,1],[1,0],[1,0],[0,1]]
 p = localize(colors,measurements,motions,sensor_right = 0.7, p_move = 0.8)
 show(p) # displays your answer
+
+print("\n*** Executed in %s seconds ***" % (time.time() - start_time))
