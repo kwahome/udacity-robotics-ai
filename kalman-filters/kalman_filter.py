@@ -1,7 +1,7 @@
 # Write a function 'kalman_filter' that implements a multi-
 # dimensional Kalman Filter for the example given
 
-import Matrix
+import matrix
 
 ########################################
 
@@ -11,7 +11,7 @@ def kalman_filter(x, P):
     for n in range(len(measurements)):
 
         # measurement update
-        y = Matrix.Matrix([[measurements[n]]]) - H*x
+        y = matrix.Matrix([[measurements[n]]]) - H*x
         s = H * P * H.transpose() + R
         K = P * H.transpose() * s.inverse()
         x = x + K*y
@@ -36,13 +36,13 @@ def kalman_filter(x, P):
 
 measurements = [1, 2, 3]
 
-x = Matrix.Matrix([[0.], [0.]]) # initial state (location and velocity)
-P = Matrix.Matrix([[1000., 0.], [0., 1000.]]) # initial uncertainty
-u = Matrix.Matrix([[0.], [0.]]) # external motion
-F = Matrix.Matrix([[1., 1.], [0, 1.]]) # next state function
-H = Matrix.Matrix([[1., 0.]]) # measurement function
-R = Matrix.Matrix([[1.]]) # measurement uncertainty
-I = Matrix.Matrix([[1., 0.], [0., 1.]]) # identity matrix
+x = matrix.Matrix([[0.], [0.]]) # initial state (location and velocity)
+P = matrix.Matrix([[1000., 0.], [0., 1000.]]) # initial uncertainty
+u = matrix.Matrix([[0.], [0.]]) # external motion
+F = matrix.Matrix([[1., 1.], [0, 1.]]) # next state function
+H = matrix.Matrix([[1., 0.]]) # measurement function
+R = matrix.Matrix([[1.]]) # measurement uncertainty
+I = matrix.Matrix([[1., 0.], [0., 1.]]) # identity matrix
 
 print kalman_filter(x, P)
 # output should be:
