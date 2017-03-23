@@ -1,3 +1,9 @@
+from math import *
+import random
+
+landmarks  = [[20.0, 20.0], [80.0, 80.0], [20.0, 80.0], [80.0, 20.0]]
+world_size = 100.0
+
 class Robot:
     def __init__(self):
         self.x = random.random() * world_size
