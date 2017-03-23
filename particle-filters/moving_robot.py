@@ -16,7 +16,7 @@ import robot
 ####   DON'T MODIFY ANYTHING ABOVE HERE! ENTER CODE BELOW ####
 
 myrobot = robot.Robot()
-# set noise
+# set noise parameters
 myrobot.set_noise(5.0, 0.1, 5.0)
 myrobot.set(30, 50, pi / 2)
 myrobot = myrobot.move(-pi / 2.0, 15.0)
