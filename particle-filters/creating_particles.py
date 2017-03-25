@@ -112,6 +112,10 @@ p = []
 
 for particle in range(0,N):
     p.append(robot())
+    
+for particle in range(len(p)):
+
+    p[particle] = p[particle].move(0.1,5.0)
 
 #enter code here
 
