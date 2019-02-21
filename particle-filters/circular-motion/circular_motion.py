@@ -95,7 +95,7 @@ class robot:
     #   move along a section of a circular path according to motion
     #
 
-    def move(self, motion, tolerance = 0.001):  # Do not change the name of this function
+    def move(self, motion, tolerance=0.001):  # Do not change the name of this function
 
         steering = motion[0]
         distance = motion[1]
